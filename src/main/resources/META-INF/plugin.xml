@@ -36,6 +36,8 @@
             instance="be.ugent.piedcler.dodona.plugin.settings.SettingsConfigurable"/>
         <applicationService serviceInterface="be.ugent.piedcler.dodona.plugin.settings.DodonaSettings"
                             serviceImplementation="be.ugent.piedcler.dodona.plugin.settings.DodonaSettings"/>
+
+        <fileEditorProvider implementation="be.ugent.piedcler.dodona.plugin.previews.ExerciseDescriptionProvider"/>
     </extensions>
 
     <actions>
