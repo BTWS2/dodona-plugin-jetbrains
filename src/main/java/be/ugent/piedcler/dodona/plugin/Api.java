@@ -151,7 +151,7 @@ public enum Api {
 	 * @return the user agent
 	 */
 	@Nonnull
-	private static String getUserAgent() {
+	public static String getUserAgent() {
 		final String version = BuildConfig.VERSION;
 		return String.format("DodonaPlugin/JetBrains-%s", version);
 	}

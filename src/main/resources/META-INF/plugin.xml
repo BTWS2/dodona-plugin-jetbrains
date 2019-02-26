@@ -16,7 +16,7 @@
         <li>[IMPROVEMENT] The authentication flow has been rewritten from scratch and is now more interactive, providing a better user experience.</li>
         <li>[IMPROVEMENT] Instructions on how to configure the plugin have been rewritten.</li>
         <li>[IMPROVEMENT] Settings have been rewritten to allow a more secure storage of the API token.</li>
-        <li>[IMPROVEMENT] Clicking "More details" upon submitting an incorrect solution now shows the feedback instead of the exercise.</li>
+        <li>[IMPROVEMENT] Upon submitting an incorrect solution to an exercise, the feedback is now shown inside the IDE instead of in a webbrowser.</li>
     </ul>
     ]]>
     </change-notes>
@@ -36,6 +36,9 @@
             instance="be.ugent.piedcler.dodona.plugin.settings.SettingsConfigurable"/>
         <applicationService serviceInterface="be.ugent.piedcler.dodona.plugin.settings.DodonaSettings"
                             serviceImplementation="be.ugent.piedcler.dodona.plugin.settings.DodonaSettings"/>
+        <toolWindow id="Dodona" anchor="right"
+                    icon="/icons/dodona.png"
+                    factoryClass="be.ugent.piedcler.dodona.plugin.browser.BrowserWindow"/>
     </extensions>
 
     <actions>

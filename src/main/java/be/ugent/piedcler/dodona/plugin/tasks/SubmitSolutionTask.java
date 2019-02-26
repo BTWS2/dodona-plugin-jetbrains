@@ -11,6 +11,7 @@ package be.ugent.piedcler.dodona.plugin.tasks;
 import be.ugent.piedcler.dodona.data.SubmissionStatus;
 import be.ugent.piedcler.dodona.exceptions.DodonaException;
 import be.ugent.piedcler.dodona.plugin.Api;
+import be.ugent.piedcler.dodona.plugin.browser.BrowserWindow;
 import be.ugent.piedcler.dodona.plugin.dto.Solution;
 import be.ugent.piedcler.dodona.plugin.exceptions.ErrorMessageException;
 import be.ugent.piedcler.dodona.plugin.exceptions.WarningMessageException;
@@ -110,8 +111,9 @@ public class SubmitSolutionTask extends Task.Backgroundable {
 				);
 			} else {
 				Notifier.warning(this.myProject, "Incorrect solution",
-					String.format("Your solution to \"%s\" was incorrect. <a href=\"%s\">More details</a>.", exercise.getName(), submission.getUrl())
+					String.format("Your solution to \"%s\" was incorrect.", exercise.getName())
 				);
+				BrowserWindow.showAndLoad(this.myProject, submission.getUrl());
 			}
 		} catch (final WarningMessageException warning) {
 			Notifier.warning(this.myProject, warning.getMessage());

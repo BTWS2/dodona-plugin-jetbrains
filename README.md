@@ -32,8 +32,9 @@ This can be done either in the settings, or in any authentication dialog that ap
 
 ## Credits
 - Plugin initially developed by [Pieter De Clercq](https://thepieterdc.github.io/).
-- Co-developed by [Tobiah_Lissens](https://github.com/darktilrisen).
+- Co-developed by [Tobiah Lissens](https://github.com/darktilrisen).
 - Thanks to [Rien Maertens](https://github.com/rien) for explaining the authentication procedure and other undocumented API questions.
 - Icons are property of [FontAwesome](http://fontawesome.io).
+- Webbrowser is based on [emBrowser4Intellij by vistarsvo](https://github.com/vistarsvo/emBrowser4Intellij/).
 
 [plugin-website]:         https://plugins.jetbrains.com/plugin/11166
