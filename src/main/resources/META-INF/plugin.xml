@@ -44,7 +44,7 @@
 
         <action id="be.ugent.piedcler.dodona.plugin.actions.NewSeries"
                 class="be.ugent.piedcler.dodona.plugin.actions.NewSeriesAction">
-            <add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewDir"/>
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
         </action>
 
         <group id="be.ugent.piedcler.dodona.plugin.actions.DodonaActions" text="UGent Dodona" popup="false">
