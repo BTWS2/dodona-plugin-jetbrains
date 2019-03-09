@@ -10,6 +10,7 @@
 
     <change-notes><![CDATA[
     <ul>
+        <li>[FEATURE] You can now create files for all exercises in a series at once, instead of having to create each exercise individually.</li>
     </ul>
     ]]>
     </change-notes>
@@ -39,6 +40,11 @@
         <action id="be.ugent.piedcler.dodona.plugin.actions.NewExercise"
                 class="be.ugent.piedcler.dodona.plugin.actions.NewExerciseAction">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewScratchFile"/>
+        </action>
+
+        <action id="be.ugent.piedcler.dodona.plugin.actions.NewSeries"
+                class="be.ugent.piedcler.dodona.plugin.actions.NewSeriesAction">
+            <add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewDir"/>
         </action>
 
         <group id="be.ugent.piedcler.dodona.plugin.actions.DodonaActions" text="UGent Dodona" popup="false">
