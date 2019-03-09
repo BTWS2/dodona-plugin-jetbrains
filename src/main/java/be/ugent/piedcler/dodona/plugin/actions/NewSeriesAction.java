@@ -8,9 +8,11 @@
  */
 package be.ugent.piedcler.dodona.plugin.actions;
 
+import be.ugent.piedcler.dodona.plugin.Api;
 import be.ugent.piedcler.dodona.plugin.Icons;
 import be.ugent.piedcler.dodona.plugin.code.identification.IdentificationConfigurerProvider;
 import be.ugent.piedcler.dodona.plugin.exceptions.WarningMessageException;
+import be.ugent.piedcler.dodona.plugin.exceptions.warnings.FileAlreadyExistsException;
 import be.ugent.piedcler.dodona.plugin.exceptions.warnings.ProgrammingLanguageNotSetException;
 import be.ugent.piedcler.dodona.plugin.notifications.Notifier;
 import be.ugent.piedcler.dodona.plugin.tasks.SelectSeriesTask;
@@ -23,15 +25,25 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
+
+import static com.intellij.openapi.application.ActionsKt.runWriteAction;
 
 /**
  * Creates a new folder from a Dodona series.
@@ -66,35 +78,60 @@ public class NewSeriesAction extends AnAction implements DumbAware {
 	/**
 	 * Creates a new folder from a given series.
 	 *
-	 * @param project  the project
-	 * @param view     current IDE view
-	 * @param series the series
+	 * @param project the project
+	 * @param view    current IDE view
+	 * @param series  the series
 	 */
 	private void create(@Nonnull final Project project,
 	                    @Nonnull final IdeView view,
 	                    @Nonnull final Series series) {
-		System.out.println(series);
-//		final PsiDirectory directory = view.getOrChooseDirectory();
-//		if (directory == null) {
-//			return;
-//		}
-//
-//		final String filename = generateFileName(exercise);
-//		final FileType filetype = FileTypeRegistry.getInstance().getFileTypeByFileName(filename);
-//		final String boilerplate = exercise.getBoilerplate().orElse("");
-//
-//		Optional.ofNullable(directory.findFile(filename)).ifPresent(file -> {
-//			throw new FileAlreadyExistsException(filename);
-//		});
-//
-//		final String code = this.idConfigurer.getConfigurer(exercise, null).configure(boilerplate, exercise.getUrl());
-//
-//		final PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
-//		final PsiFile file = fileFactory.createFileFromText(filename, filetype, code);
-//
-//		final VirtualFile virtualFile = runWriteAction(() -> (PsiFile) directory.add(file)).getVirtualFile();
-//
-//		FileEditorManager.getInstance(project).openFile(virtualFile, true);
+		final PsiDirectory parent = view.getOrChooseDirectory();
+		if (parent == null) {
+			return;
+		}
+		
+		final String directoryName = generateDirectoryName(series);
+		final PsiDirectory directory = parent.createSubdirectory(directoryName);
+		
+		try {
+			final Collection<Exercise> exercises = Api.callModal(project, "Downloading exercises", dodona ->
+				dodona.exercises().getAll(series)
+			);
+			
+			exercises.forEach(exercise -> {
+					final String filename = generateFileName(exercise);
+					final FileType filetype = FileTypeRegistry.getInstance().getFileTypeByFileName(filename);
+					final String boilerplate = exercise.getBoilerplate().orElse("");
+					
+					Optional.ofNullable(directory.findFile(filename)).ifPresent(file -> {
+						throw new FileAlreadyExistsException(filename);
+					});
+					
+					final String code = this.idConfigurer.getConfigurer(exercise, null).configure(boilerplate, exercise.getUrl());
+					
+					final PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
+					final PsiFile file = fileFactory.createFileFromText(filename, filetype, code);
+					
+					final VirtualFile virtualFile = runWriteAction(() -> (PsiFile) directory.add(file)).getVirtualFile();
+					
+					FileEditorManager.getInstance(project).openFile(virtualFile, true);
+				}
+			);
+		} catch (final Exception ex) {
+			Notifier.error(project, "Failed creating series", ex.getMessage(), ex);
+		}
+	}
+	
+	/**
+	 * Generates a directory name for the given series.
+	 *
+	 * @param series the series
+	 * @return the directory name
+	 */
+	@Nonnull
+	private static String generateDirectoryName(@Nonnull final Series series) {
+		//TODO improve this, related to issue #67.
+		return String.valueOf(series.getId());
 	}
 	
 	/**
