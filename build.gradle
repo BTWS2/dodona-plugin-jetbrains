@@ -6,11 +6,9 @@ plugins {
 }
 
 group 'be.ugent.piedcler.dodona'
-version '1.1.4-SNAPSHOT'
+version '1.4.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
-
-def hasPyCharm = project.hasProperty('pycharmPath')
 
 buildConfig {
     appName 'ugent-dodona'
@@ -23,10 +21,8 @@ intellij {
     version ideaVersion
     pluginName 'ugent-dodona'
     updateSinceUntilBuild false
-    if (hasPyCharm){
-        alternativeIdePath pycharmPath
-    }else{
-        plugins += [pythonPlugin]
+    if (customIde == 'true') {
+        alternativeIdePath customIdePath
     }
 }
 
@@ -34,22 +30,22 @@ repositories {
     mavenCentral()
 
     maven {
-        url  "https://dl.bintray.com/thepieterdc/dodona-api-java"
+        url "https://dl.bintray.com/thepieterdc/dodona-api-java"
     }
 
-    if (hasPyCharm){
+    if (customIde == 'true') {
         flatDir {
-            dirs "$pycharmPath/lib"
+            dirs "$customIdePath/lib"
         }
     }
 }
 
 dependencies {
-    compile group: 'be.ugent.piedcler.dodona', name: 'dodona-api-interface', version: '1.0.5'
-    runtime group: 'be.ugent.piedcler.dodona', name: 'dodona-api-impl', version: '1.0.5'
+    compile group: 'be.ugent.piedcler.dodona', name: 'dodona-api-interface', version: '1.2.3'
+    runtime group: 'be.ugent.piedcler.dodona', name: 'dodona-api-impl', version: '1.2.3'
 
-    if (hasPyCharm){
-        compileOnly name: 'pycharm'
+    if (customIde == 'true') {
+        compileOnly name: customIdeName
     }
 }
 
