@@ -10,6 +10,7 @@
 /**
  * Utilities.
  */
+
 @ParametersAreNonnullByDefault
 package be.ugent.piedcler.dodona.plugin.util;
 
